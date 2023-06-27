@@ -8,21 +8,20 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [planets, setPlanets] = useState<Planet[]>([]);
 
-  function handleSearch() {
+  async function handleSearch() {
      if(searchTerm === ('')) {
       alert('Favor digitar o nome do planeta')
     }
+    try {
+      const response = await axios.get(import.meta.env.VITE_BASE_URL)
+      setPlanets(response.data.results);
+      //setSearchTerm(" "); O campo input apaga após pesquisar mas o retorno da pesquisa da errado
 
-    axios.get("https://swapi.dev/api/planets/")
-      .then((response) => {
-        setPlanets(response.data.results);
-        
-      })
-      .catch((error) => {    
+    }catch(error) {    
         console.error(error);
         alert('Erro. Planeta não encontrado.');    
         
-      });
+      };
   }
 
   const filterPlanets = planets.filter((planet) => planet.name.toLowerCase().includes(searchTerm.toLocaleLowerCase()))
